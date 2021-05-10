@@ -1,25 +1,26 @@
 import * as Scroll from "react-scroll";
 
 import { Button, Flex } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-import JwtDecode from "jwt-decode";
-import { getToken } from "../../services/localStorageService";
-import { useState } from "react";
+// import JwtDecode from "jwt-decode";
+// import { getToken } from "../../services/localStorageService";
+// import { useState } from "react";
+import { AuthContext } from "../../context/AuthContextProvider";
 
 let scroll = Scroll.animateScroll;
 function HeadersMenu() {
-  const [user, setUser] = useState(null);
-  let decodeTk;
-  const getUser = async () => {
-    try {
-      decodeTk = JwtDecode(getToken());
-      await setUser(decodeTk);
-    } catch (error) {
-      // invalid token format
-    }
-  };
+  const { user, getUser } = useContext(AuthContext);
+  // let decodeTk;
+  // const getUser = async () => {
+  //   try {
+  //     decodeTk = JwtDecode(getToken());
+  //     await setUser(decodeTk);
+  //   } catch (error) {
+  //     // invalid token format
+  //   }
+  // };
 
   useEffect(() => {
     getUser();

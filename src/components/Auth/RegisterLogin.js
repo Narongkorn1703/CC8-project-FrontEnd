@@ -21,10 +21,12 @@ import {
   Box,
   InputRightElement,
   InputGroup,
+  // Divider,
 } from "@chakra-ui/react";
 import { AuthContext } from "../../context/AuthContextProvider";
 import JwtDecode from "jwt-decode";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+
 function RegisterLogin({ onClose, initialRef }) {
   const [input, setInput] = useState({
     email: "",
@@ -54,12 +56,12 @@ function RegisterLogin({ onClose, initialRef }) {
       ) {
         setError((prev) => ({
           ...prev,
-          email: "Invalid Email bitch!",
+          email: "Invalid Email ",
         }));
       }
     }
   };
-  const handleOnRegister = (e) => {
+  const handleOnRegister = async (e) => {
     const {
       email,
       firstName,
@@ -69,37 +71,42 @@ function RegisterLogin({ onClose, initialRef }) {
       tel,
     } = input;
     e.preventDefault();
-    axios
-      .post("/register", {
+    try {
+      const res = await axios.post("/register", {
         email,
         firstName,
         lastName,
         password,
         confirmPassword,
         tel,
-      })
-
-      .then((res) => {
-        swal("Success", "Thanks", "success");
-        setToken(res.data.token);
-        setIsAuthenticated(true);
-
-        history.push("/Homepage");
-      })
-
-      .catch((err) => {
-        if (err.response) {
-          setError({ server: err.message });
-        } else {
-          setError({ front: err.message });
-        }
-        if (error === "Request failed with status code 500") {
-          setError({ err: "This Email is used" });
-        }
-        swal("Oops", `${err}`, "error");
-
-        console.dir(err);
       });
+
+      await swal("Success", "Thanks", "success");
+      setToken(res.data.token);
+      setIsAuthenticated(true);
+      let token = await JwtDecode(getToken());
+
+      await localStorage.setItem(
+        "User",
+        `${token.firstName} ${token.lastName}`
+      );
+      await localStorage.setItem("role", `${token.role}`);
+
+      await history.push("/Homepage");
+      window.location.reload();
+    } catch (err) {
+      if (err.response) {
+        setError({ server: err.message });
+      } else {
+        setError({ front: err.message });
+      }
+      if (error === "Request failed with status code 500") {
+        setError({ err: "This Email is used" });
+      }
+      swal("Oops", `${err}`, "error");
+
+      console.dir(err);
+    }
   };
 
   ////LOGIN
@@ -127,6 +134,7 @@ function RegisterLogin({ onClose, initialRef }) {
         "User",
         `${token.firstName} ${token.lastName}`
       );
+      await localStorage.setItem("role", `${token.role}`);
       if (token.role === "ADMIN") {
         history.push("/admin-product");
       } else {
@@ -148,6 +156,13 @@ function RegisterLogin({ onClose, initialRef }) {
   const handleClick = () => setShow(!show);
   return (
     <>
+      <div id="fb-root"></div>
+      <script
+        async
+        defer
+        crossorigin="anonymous"
+        src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v10.0&appId=2448840655347620&autoLogAppEvents=1"
+        nonce="sEM9ljl8"></script>
       <ModalOverlay />
       {isFormLogin ? (
         <ModalContent>
@@ -315,6 +330,7 @@ function RegisterLogin({ onClose, initialRef }) {
               onClick={handleOnSubmit}>
               Login
             </Button>
+
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>

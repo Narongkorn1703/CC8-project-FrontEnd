@@ -16,69 +16,58 @@ import { AuthContext } from "../../context/AuthContextProvider";
 import { FaUser } from "react-icons/fa";
 import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
 import {
-  getToken,
+  //   getToken,
   clearToken,
 } from "../../services/localStorageService";
-import JwtDecode from "jwt-decode";
+// import JwtDecode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
-import { useEffect } from "react";
-import axios from "../../config/axios";
+// import { useEffect } from "react";
+// import axios from "../../config/axios";
 import { ProductContext } from "../../context/ProductContextProvider";
 import swal from "sweetalert";
-function HeadingTool({ onOpen }) {
+import { OrderPaymentContext } from "../../context/OrderPaymentContextProvider";
+function HeadingToolAdminPayment({ onOpen }) {
   const { setIsAuthenticated } = useContext(AuthContext);
   const [inputSearch, setInputSearch] = useState("");
   const user = localStorage.getItem("User");
-  const [users, setUsers] = useState(null);
+  //   const [users, setUsers] = useState(null);
+  const { payment } = useContext(OrderPaymentContext);
   const { setSearchResult, searchResult } = useContext(
     ProductContext
   );
 
-  let decodeTk;
-  const getUser = async () => {
-    try {
-      decodeTk = await JwtDecode(getToken());
-      await setUsers(decodeTk);
-    } catch (error) {
-      // invalid token format
-    }
-  };
+  //   let decodeTk;
+  //   const getUser = async () => {
+  //     try {
+  //       decodeTk = await JwtDecode(getToken());
+  //       await setUsers(decodeTk);
+  //     } catch (error) {
+  //       // invalid token format
+  //     }
+  //   };
   const handleOnChangeInputSearch = (e) => {
     setInputSearch(e.target.value);
     console.log(e.target.value);
   };
   const handleAdminButtonSearch = async () => {
     console.log(inputSearch);
-    const keyword = `keyword=${inputSearch}`;
 
-    const res = await axios.get(`/admin/get?${keyword}`);
-    setSearchResult(res.data.products);
-    console.log(res.data.products);
+    // setSearchResult();
+
     console.log(searchResult);
-    history.push("/search-admin");
+    // history.push("/search-admin-payment");
   };
 
-  const handleUserButtonSearch = async () => {
-    const keyword = `keyword=${inputSearch}`;
-
-    if (inputSearch === "") {
-      const response = await axios.get(`/products/search?${keyword}`);
-      setSearchResult(response.data.products);
-      return history.push("/search-result");
-    }
-    const res = await axios.get(`/products/search?${keyword}`);
-    setSearchResult(res.data.products);
-
-    history.push("/search-result");
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
+  //   useEffect(() => {
+  //     getUser();
+  //   }, []);
 
   const history = useHistory();
   const LogOutHandler = async () => {
+    await clearToken();
+    await localStorage.clear();
+    await setIsAuthenticated(false);
     const res = await swal({
       title: "You want to Logout ?",
       icon: "warning",
@@ -87,11 +76,7 @@ function HeadingTool({ onOpen }) {
     });
     if (res) {
       await swal("LogOut! Successfully", "", "success");
-      await clearToken();
-      await localStorage.clear();
-      await setIsAuthenticated(false);
       history.push("/");
-      window.location.reload();
     }
   };
 
@@ -107,7 +92,7 @@ function HeadingTool({ onOpen }) {
           GreenLike
         </Link>
         <Spacer />
-        <Input
+        {/* <Input
           onChange={handleOnChangeInputSearch}
           style={{ marginRight: 10 }}
           placeholder="Name , Type  or etc"
@@ -115,31 +100,19 @@ function HeadingTool({ onOpen }) {
           w="20%"
           bg="Input.100"
         />
-        {users?.role === "ADMIN" ? (
-          <Button
-            m="6"
-            w="8%"
-            type="submit"
-            onClick={handleAdminButtonSearch}
-            style={{ marginLeft: 10 }}
-            colorScheme="blue"
-            _focus={{ boxShadow: "none" }}
-            fontWeight="semibold">
-            Search
-          </Button>
-        ) : (
-          <Button
-            m="6"
-            w="8%"
-            type="submit"
-            onClick={handleUserButtonSearch}
-            style={{ marginLeft: 10 }}
-            colorScheme="blue"
-            _focus={{ boxShadow: "none" }}
-            fontWeight="semibold">
-            Search
-          </Button>
-        )}
+
+        <Button
+          m="6"
+          w="8%"
+          type="submit"
+          onClick={handleAdminButtonSearch}
+          style={{ marginLeft: 10 }}
+          colorScheme="blue"
+          _focus={{ boxShadow: "none" }}
+          fontWeight="semibold">
+          Search
+        </Button> */}
+
         {!user ? (
           <Button
             m="6"
@@ -220,4 +193,4 @@ function HeadingTool({ onOpen }) {
   );
 }
 
-export default HeadingTool;
+export default HeadingToolAdminPayment;

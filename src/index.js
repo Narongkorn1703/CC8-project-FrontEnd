@@ -8,16 +8,25 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Fonts from "./styles/Fonts";
 import { theme } from "./styles/theme";
 import AuthContextProvider from "./context/AuthContextProvider";
+import ProductContextProvider from "./context/ProductContextProvider";
+import CartContextProvider from "./context/CartProductProvider";
+import OrderPaymentContextProvider from "./context/OrderPaymentContextProvider";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthContextProvider>
-        <ChakraProvider theme={theme}>
-          <Fonts />
-          <App />
-        </ChakraProvider>
-      </AuthContextProvider>
+      <OrderPaymentContextProvider>
+        <ProductContextProvider>
+          <CartContextProvider>
+            <AuthContextProvider>
+              <ChakraProvider theme={theme}>
+                <Fonts />
+                <App />
+              </ChakraProvider>
+            </AuthContextProvider>
+          </CartContextProvider>
+        </ProductContextProvider>
+      </OrderPaymentContextProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")

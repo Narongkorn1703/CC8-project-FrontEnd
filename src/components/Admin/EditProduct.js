@@ -5,11 +5,12 @@ import {
   FormControl,
   FormLabel,
   Icon,
+  Image,
   Input,
   InputGroup,
   InputLeftAddon,
-  InputLeftElement,
   InputRightAddon,
+  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -20,7 +21,6 @@ import {
   NumberInput,
   NumberInputField,
   Select,
-  Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
@@ -37,7 +37,26 @@ function EditProduct({ getProduct, product, productId }) {
     amount: `${cloneP.amount}`,
     price: `${cloneP.price}`,
     productStatus: `${cloneP.productStatus}`,
+    productImg: `${cloneP.productImg}`,
   });
+  const handleOnChangeFile = (e) => {
+    if (e.target.files[0]) {
+      setEditForm((cur) => ({
+        ...cur,
+        productImg: e.target.files[0],
+      }));
+      setCloneP((cur) => ({
+        ...cur,
+        productImg: URL.createObjectURL(e.target.files[0]),
+      }));
+    } else {
+      setEditForm((cur) => ({
+        ...cur,
+        productImg: null,
+      }));
+      setEditForm("");
+    }
+  };
 
   const [type, setType] = useState([]);
   const handleOnChange = (e) => {
@@ -53,30 +72,32 @@ function EditProduct({ getProduct, product, productId }) {
       amount,
       price,
       productStatus,
+      productImg,
     } = editForm;
-
-    let res = await swal({
+    console.log(editForm);
+    const myFormData = new FormData();
+    myFormData.append("name", name);
+    myFormData.append("productCategoriesId", productCategoriesId);
+    myFormData.append("amount", amount);
+    myFormData.append("price", price);
+    myFormData.append("image", productImg);
+    myFormData.append("productStatus", productStatus);
+    const res = await swal({
       title: "Are you sure?",
       text: "You want to Update this product?",
       icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((res) => {
-      if (res) {
-        axios.put(`/admin/update/${id}`, {
-          name,
-          productCategoriesId,
-          amount: +amount,
-          price: +price,
-          productStatus,
-        });
-        swal("Updated", {
-          icon: "success",
-        });
-      }
+      buttons: ["Cancel", true],
     });
-    onClose();
-    window.location.reload();
+    if (res) {
+      await axios.put(`/admin/update/${id}`, myFormData);
+      await swal("Updated", {
+        text: `Update Product: ${name}`,
+        icon: "success",
+      });
+
+      await onClose();
+      await setTimeout(() => window.location.reload(), 500);
+    }
   };
   const getCategories = async () => {
     const res = await axios.get("/admin/getall-categories");
@@ -186,35 +207,35 @@ function EditProduct({ getProduct, product, productId }) {
                 onChange={(e) => handleOnChange(e)}>
                 <option value="AVAILABLE">AVAILABLE</option>
                 <option value="OutStock">OutStock</option>
-                <option value="DELETE">DELETE</option>
+                {/* <option value="DELETE">DELETE</option> */}
               </Select>
             </FormControl>
 
             <FormControl>
               <FormLabel>ProductImage</FormLabel>
               <InputGroup>
-                <Flex borderWidth="1px" borderRadius="4">
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={
-                      <Icon
-                        as={FiFile}
-                        fontSize="20"
-                        marginRight="10px"
-                        color="#CBD5E0"
-                      />
-                    }
-                    width="20%"
-                  />
-                  <Spacer />
-                  <Button
-                    marginLeft="10"
-                    colorScheme="linkedin"
-                    width="60%">
-                    UploadFile
-                  </Button>
-                </Flex>
+                <InputRightElement
+                  pointerEvents="none"
+                  children={
+                    <Icon as={FiFile} fontSize="20" color="#CBD5E0" />
+                  }
+                  width="20%"
+                />
+
+                <Input
+                  padding="1"
+                  pl="2"
+                  type="file"
+                  onChange={handleOnChangeFile}
+                />
               </InputGroup>
+              <Image
+                mt="10px"
+                borderRadius="6px"
+                src={cloneP.productImg}
+                boxShadow="150px"
+                fallbackSrc="https://via.placeholder.com/150"
+              />
             </FormControl>
           </ModalBody>
           <ModalFooter>

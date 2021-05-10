@@ -1,6 +1,6 @@
 import axios from "axios";
 import {
-  clearToken,
+  // clearToken,
   getToken,
 } from "../services/localStorageService";
 axios.defaults.baseURL = "http://localhost:8000/";

@@ -1,31 +1,25 @@
-import React from "react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Box } from "@chakra-ui/layout";
 import {
+  Image,
   Table,
   Thead,
-  Tbody,
   Tr,
   Th,
   Td,
-  Image,
-  Box,
+  Tbody,
 } from "@chakra-ui/react";
+import React from "react";
+import EditProduct from "./EditProduct";
 import axios from "../../config/axios";
-import { useState } from "react";
-import { useEffect } from "react";
-import { DeleteIcon } from "@chakra-ui/icons";
 import Swal from "sweetalert2";
-import ModalAddProduct from "./ModalAddProduct";
-import EditProduct from "../Admin/EditProduct";
-function BodyProductAdmin() {
-  const [products, setProducts] = useState([]);
-  const getProduct = async () => {
-    const res = await axios.get("/admin/getAll");
-    setProducts(res.data.product);
-  };
-  useEffect(() => {
-    getProduct();
-  }, []);
-
+import { useContext } from "react";
+import { ProductContext } from "../../context/ProductContextProvider";
+function BodyAdminSearch() {
+  const { products, getProducts, searchResult } = useContext(
+    ProductContext
+  );
+  console.log(searchResult);
   const handleDel = async (productId) => {
     console.log("delete");
     let response = await Swal.fire({
@@ -43,10 +37,9 @@ function BodyProductAdmin() {
         "Deleted!",
         "Your file has been deleted.",
         "success"
-      ).then(() => getProduct());
+      ).then(() => getProducts());
     }
   };
-
   return (
     <>
       <Table variant="simple">
@@ -63,7 +56,7 @@ function BodyProductAdmin() {
             <Th>Manage</Th>
           </Tr>
         </Thead>
-        {products?.map((product, idx) => {
+        {searchResult?.map((product, idx) => {
           return (
             <Tbody key={idx}>
               <Tr>
@@ -80,11 +73,10 @@ function BodyProductAdmin() {
                     fallbackSrc="https://via.placeholder.com/100"
                   />
                 </Td>
-
                 <Td>
                   <Box w="100%">
                     <EditProduct
-                      getProduct={getProduct}
+                      getProduct={getProducts}
                       product={product}
                       productId={product.id}
                     />
@@ -92,7 +84,7 @@ function BodyProductAdmin() {
                       <DeleteIcon
                         color="#E53E3E"
                         fontSize="30"
-                        onClick={() => handleDel(product.id)}
+                        onClick={() => handleDel(products.id)}
                         m="4"
                       />
                     ) : null}
@@ -103,9 +95,8 @@ function BodyProductAdmin() {
           );
         })}
       </Table>
-      <ModalAddProduct getProduct={getProduct} />
     </>
   );
 }
 
-export default BodyProductAdmin;
+export default BodyAdminSearch;

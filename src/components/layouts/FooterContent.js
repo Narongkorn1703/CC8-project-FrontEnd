@@ -32,7 +32,7 @@ function FooterContent() {
         <div>
           <Text p="6">
             <EmailIcon w="10" h="10" m="2" />
-            RisingNova@gmail.com
+            narongkarn1703@gmail.com
           </Text>
         </div>
       </Flex>

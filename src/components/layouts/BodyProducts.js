@@ -1,11 +1,16 @@
-import { Box, Flex } from "@chakra-ui/layout";
+// import { Box, Flex } from "@chakra-ui/layout";
 import React from "react";
+import BodyHomepage from "./BodyHomepage";
+import BodyShowProducts from "./BodyShowProducts";
+import ModalShopping from "./ModalShopping";
 
 function BodyProducts() {
   return (
-    <Flex height="800px">
-      <Box></Box>
-    </Flex>
+    <>
+      <BodyHomepage />
+      <BodyShowProducts />
+      <ModalShopping />
+    </>
   );
 }
 

@@ -1,12 +1,12 @@
 import React from "react";
 import AdminPaymentBody from "../components/Admin/AdminPaymentBody";
+import HeaderAdminPayment from "../components/Admin/HeaderAdminPayment";
 import Footer from "../components/layouts/Footer";
-import Headers from "../components/layouts/Headers";
 
 function AdminPayment() {
   return (
     <>
-      <Headers />
+      <HeaderAdminPayment />
       <AdminPaymentBody />
       <Footer />
     </>
