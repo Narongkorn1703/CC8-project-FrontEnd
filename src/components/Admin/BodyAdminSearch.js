@@ -21,7 +21,8 @@ function BodyAdminSearch() {
   );
   console.log(searchResult);
   const handleDel = async (productId) => {
-    console.log("delete");
+    console.log("delete", productId);
+
     let response = await Swal.fire({
       title: "Are you sure?",
       text: 'You want to "Delete" this Item?',
@@ -84,7 +85,7 @@ function BodyAdminSearch() {
                       <DeleteIcon
                         color="#E53E3E"
                         fontSize="30"
-                        onClick={() => handleDel(products.id)}
+                        onClick={() => handleDel(product.id)}
                         m="4"
                       />
                     ) : null}
