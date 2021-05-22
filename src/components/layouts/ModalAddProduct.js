@@ -75,13 +75,8 @@ function ModalAddProduct() {
     setAddProduct((prev) => ({ ...prev, [name]: value }));
   };
   const handleOnAdd = (e) => {
-    const {
-      name,
-      categories,
-      amount,
-      price,
-      productImg,
-    } = addProduct;
+    const { name, categories, amount, price, productImg } =
+      addProduct;
     e.preventDefault();
     // if (productImg === "") {
     //   return axios

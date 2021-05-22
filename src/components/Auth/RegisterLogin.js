@@ -113,8 +113,8 @@ function RegisterLogin({ onClose, initialRef }) {
 
   const validateInput = () => {
     const newError = {};
-    if (!email) newError.email = "Email is required bitch!";
-    if (!password) newError.password = "Password is required bitch!";
+    if (!email) newError.email = "Email is required !";
+    if (!password) newError.password = "Password is required !";
     setError(newError);
   };
   const handleOnSubmit = async (e) => {
